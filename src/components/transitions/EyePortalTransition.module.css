@@ -1,0 +1,68 @@
+.stage {
+  position: relative;
+  min-height: 100svh;
+}
+
+.overlay {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.finalRed {
+  position: absolute;
+  z-index: 1;
+  inset: -2px;
+  background: #b80000;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.origin {
+  position: absolute;
+  left: var(--portal-origin-x);
+  top: var(--portal-origin-y);
+  width: 64px;
+  height: 64px;
+  transform: translate3d(-50%, -50%, 0);
+}
+
+.disc,
+.inner,
+.core,
+.finalRed {
+  position: absolute;
+  border: 0;
+  outline: 0;
+  box-shadow: none;
+  filter: none;
+}
+
+.disc,
+.inner,
+.core {
+  border-radius: 50%;
+}
+
+.disc {
+  inset: 0;
+  background: #b80000;
+  transform: scale(0);
+}
+
+.inner {
+  inset: 14%;
+  background: #d21616;
+}
+
+.core {
+  inset: 37.5%;
+  background: #b80000;
+}
+
+.exitRunway {
+  min-height: 40svh;
+  background: #b80000;
+}

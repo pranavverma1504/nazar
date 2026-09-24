@@ -1,0 +1,224 @@
+.section {
+  --eye-size: min(74vmin, 62vw, 760px);
+  --eye-top: clamp(2.5rem, 7svh, 5.5rem);
+  --waterline: 59%;
+  position: relative;
+  min-height: 100svh;
+  overflow: hidden;
+  background: #070707;
+  color: #e5ddc8;
+}
+
+.scene,
+.background,
+.haze,
+.waterBase,
+.reflectionSurface,
+.waterHighlights,
+.foregroundWater,
+.grain {
+  position: absolute;
+  inset: 0;
+}
+
+.scene {
+  overflow: hidden;
+  isolation: isolate;
+  background: #070707;
+}
+
+.background {
+  z-index: 0;
+  inset: -4%;
+  background:
+    radial-gradient(circle at 50% 38%, rgb(141 17 17 / 12%), transparent 34%),
+    radial-gradient(ellipse at 50% 72%, rgb(229 221 200 / 4%), transparent 42%),
+    #070707;
+  will-change: transform;
+}
+
+.haze {
+  z-index: 1;
+  inset: 28% -8% 18%;
+  background:
+    radial-gradient(ellipse at 35% 55%, rgb(229 221 200 / 4%), transparent 35%),
+    radial-gradient(ellipse at 72% 48%, rgb(141 17 17 / 8%), transparent 38%);
+  opacity: 0.8;
+  will-change: transform;
+}
+
+.eyePosition,
+.reflectionPosition {
+  position: absolute;
+  left: 50%;
+  width: var(--eye-size);
+  aspect-ratio: 1;
+}
+
+.eyePosition {
+  z-index: 2;
+  top: var(--eye-top);
+  transform: translate3d(-50%, 0, 0);
+}
+
+.eyeRotator,
+.reflectionRotator {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+
+.eyeArtwork,
+.reflectionArtwork {
+  object-fit: contain;
+}
+
+.waterBase {
+  z-index: 3;
+  top: var(--waterline);
+  background:
+    linear-gradient(to bottom, rgb(18 17 15 / 95%) 0, rgb(7 7 7 / 97%) 20%, #070707 100%);
+  border-top: 1px solid rgb(229 221 200 / 22%);
+}
+
+.reflectionSurface {
+  z-index: 4;
+  overflow: hidden;
+  clip-path: inset(var(--waterline) 0 0 0);
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0 calc(var(--waterline) - 1px),
+    #000 var(--waterline),
+    rgb(0 0 0 / 72%) 78%,
+    transparent 98%
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0 calc(var(--waterline) - 1px),
+    #000 var(--waterline),
+    rgb(0 0 0 / 72%) 78%,
+    transparent 98%
+  );
+}
+
+.reflectionPosition {
+  top: calc(var(--waterline) + var(--waterline) - var(--eye-top) - var(--eye-size));
+  transform: translate3d(-50%, 0, 0) scaleY(0.84);
+  transform-origin: 50% 0;
+  opacity: 0.34;
+  filter: saturate(0.75) brightness(0.58) contrast(1.18) blur(1px);
+}
+
+.reflectionArtwork {
+  transform: scaleY(-1);
+}
+
+.waterHighlights {
+  z-index: 5;
+  top: calc(var(--waterline) - 1px);
+  right: -8%;
+  left: -8%;
+  overflow: hidden;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.highlightTexture,
+.rippleTexture {
+  position: absolute;
+  inset: 0;
+}
+
+.highlightTexture {
+  background:
+    repeating-linear-gradient(
+      176deg,
+      transparent 0 13px,
+      rgb(229 221 200 / 11%) 14px 15px,
+      transparent 16px 27px,
+      rgb(141 17 17 / 12%) 28px 29px
+    );
+  mask-image: linear-gradient(to bottom, #000, transparent 72%);
+  -webkit-mask-image: linear-gradient(to bottom, #000, transparent 72%);
+  transform: scaleX(1.04) skewX(-1deg);
+  animation: highlight-drift 10s ease-in-out infinite alternate;
+}
+
+.foregroundWater {
+  z-index: 6;
+  top: calc(var(--waterline) - 0.25rem);
+  right: -10%;
+  left: -10%;
+  overflow: hidden;
+  background: linear-gradient(to bottom, transparent, rgb(7 7 7 / 42%) 30%, #070707 96%);
+  pointer-events: none;
+  will-change: transform;
+}
+
+.rippleTexture {
+  background:
+    repeating-linear-gradient(
+      182deg,
+      transparent 0 18px,
+      rgb(229 221 200 / 8%) 19px 20px,
+      transparent 21px 35px,
+      rgb(141 17 17 / 10%) 36px 37px
+    );
+  opacity: 0.7;
+  transform: scaleX(1.08) skewX(1.5deg);
+  animation: ripple-drift 7s ease-in-out infinite alternate;
+}
+
+.grain {
+  z-index: 7;
+  pointer-events: none;
+  opacity: 0.08;
+  background-image:
+    repeating-radial-gradient(circle at 20% 30%, transparent 0 2px, rgb(229 221 200 / 25%) 3px 4px),
+    repeating-radial-gradient(circle at 80% 65%, transparent 0 3px, rgb(141 17 17 / 18%) 4px 5px);
+  background-size: 31px 29px, 37px 41px;
+  mix-blend-mode: screen;
+}
+
+@keyframes highlight-drift {
+  to {
+    transform: translate3d(-2.5%, 0.25rem, 0) scaleX(1.07) skewX(1deg);
+  }
+}
+
+@keyframes ripple-drift {
+  to {
+    transform: translate3d(3%, -0.2rem, 0) scaleX(1.04) skewX(-1.5deg);
+  }
+}
+
+@media (max-width: 700px) {
+  .section {
+    --eye-size: min(90vw, 68svh);
+    --eye-top: clamp(10rem, 26svh, 14rem);
+    --waterline: 58%;
+  }
+
+  .background {
+    background:
+      radial-gradient(circle at 50% 38%, rgb(141 17 17 / 11%), transparent 42%),
+      #070707;
+  }
+
+  .reflectionPosition {
+    opacity: 0.3;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .eyeRotator,
+  .reflectionRotator {
+    transform: rotate(180deg);
+  }
+
+  .highlightTexture,
+  .rippleTexture {
+    animation: none;
+  }
+}
