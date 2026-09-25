@@ -38,8 +38,28 @@ export function EyePortalTransition({ children }: { children: ReactNode }) {
     const inner = innerRef.current;
     const core = coreRef.current;
     const artboard = stage?.querySelector<HTMLElement>("[data-eye-system='shared']");
+    const horizontalSection = stage?.querySelector<HTMLElement>(
+      "[data-nazar-section='horizontal-intro']",
+    );
+    const horizontalTrack = stage?.querySelector<HTMLElement>(
+      "[data-horizontal-intro-track]",
+    );
+    const horizontalPath = stage?.querySelector<SVGPathElement>(
+      "[data-horizontal-intro-path]",
+    );
 
-    if (!stage || !overlay || !finalRed || !disc || !inner || !core || !artboard) {
+    if (
+      !stage ||
+      !overlay ||
+      !finalRed ||
+      !disc ||
+      !inner ||
+      !core ||
+      !artboard ||
+      !horizontalSection ||
+      !horizontalTrack ||
+      !horizontalPath
+    ) {
       return;
     }
 
@@ -81,17 +101,31 @@ export function EyePortalTransition({ children }: { children: ReactNode }) {
 
     media.add("(prefers-reduced-motion: no-preference)", () => {
       const context = gsap.context(() => {
+        const portalScrollDistance = () => Math.round(window.innerHeight * 1.8);
+        const horizontalScrollDistance = () =>
+          horizontalTrack.scrollWidth - window.innerWidth;
+        const horizontalDuration = () =>
+          horizontalScrollDistance() / portalScrollDistance();
+        let horizontalTween: gsap.core.Animation | null = null;
+        let pathTween: gsap.core.Animation | null = null;
+        const pathLength = horizontalPath.getTotalLength();
+
         const timeline = gsap.timeline({
           scrollTrigger: {
             trigger: stage,
             start: "top top",
-            end: () => `+=${Math.round(window.innerHeight * 1.8)}`,
+            end: () =>
+              `+=${portalScrollDistance() + horizontalScrollDistance()}`,
             pin: true,
             pinSpacing: true,
             scrub: 0.8,
             anticipatePin: 1,
             invalidateOnRefresh: true,
-            onRefreshInit: measureOrigin,
+            onRefreshInit: () => {
+              measureOrigin();
+              horizontalTween?.duration(horizontalDuration());
+              pathTween?.duration(horizontalDuration());
+            },
             onRefresh: measureOrigin,
           },
         });
@@ -115,7 +149,38 @@ export function EyePortalTransition({ children }: { children: ReactNode }) {
             0.52,
           )
           .to(finalRed, { opacity: 1, duration: 0.01, ease: "none" }, 0.985)
-          .to({ hold: 0 }, { hold: 1, duration: 0.04 }, 0.96);
+          .to({ hold: 0 }, { hold: 1, duration: 0.04 }, 0.96)
+          .set(horizontalSection, { autoAlpha: 1 }, 1)
+          .set(
+            horizontalPath,
+            {
+              strokeDasharray: pathLength,
+              strokeDashoffset: pathLength,
+            },
+            1,
+          );
+
+        timeline.to(
+          horizontalTrack,
+          {
+            x: () => -horizontalScrollDistance(),
+            duration: horizontalDuration(),
+            ease: "none",
+          },
+          1,
+        );
+        horizontalTween = timeline.recent() as gsap.core.Animation;
+
+        timeline.to(
+          horizontalPath,
+          {
+            strokeDashoffset: 0,
+            duration: horizontalDuration(),
+            ease: "none",
+          },
+          1,
+        );
+        pathTween = timeline.recent() as gsap.core.Animation;
       }, stage);
 
       return () => context.revert();
@@ -128,26 +193,23 @@ export function EyePortalTransition({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <>
-      <div className={styles.stage} data-nazar-layer="eye-portal-stage" ref={stageRef}>
-        {children}
-        <div aria-hidden="true" className={styles.finalRed} ref={finalRedRef} />
-        <div
-          aria-hidden="true"
-          className={styles.overlay}
-          data-nazar-layer="eye-portal-overlay"
-          ref={overlayRef}
-        >
-          <div className={styles.origin}>
-            <div className={styles.disc} data-eye-portal-disc ref={discRef}>
-              <div className={styles.inner} ref={innerRef}>
-                <div className={styles.core} ref={coreRef} />
-              </div>
+    <div className={styles.stage} data-nazar-layer="eye-portal-stage" ref={stageRef}>
+      {children}
+      <div aria-hidden="true" className={styles.finalRed} ref={finalRedRef} />
+      <div
+        aria-hidden="true"
+        className={styles.overlay}
+        data-nazar-layer="eye-portal-overlay"
+        ref={overlayRef}
+      >
+        <div className={styles.origin}>
+          <div className={styles.disc} data-eye-portal-disc ref={discRef}>
+            <div className={styles.inner} ref={innerRef}>
+              <div className={styles.core} ref={coreRef} />
             </div>
           </div>
         </div>
       </div>
-      <div aria-hidden="true" className={styles.exitRunway} />
-    </>
+    </div>
   );
 }

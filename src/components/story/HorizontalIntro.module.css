@@ -1,0 +1,80 @@
+.section {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  width: 100%;
+  height: 100svh;
+  overflow: hidden;
+  background: #b80000;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.track {
+  position: relative;
+  display: flex;
+  width: 200vw;
+  height: 100%;
+  background: #b80000;
+  will-change: transform;
+}
+
+.pathLayer {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.storyPath {
+  fill: none;
+  stroke: #e5ddc8;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.panel {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  flex: 0 0 100vw;
+  width: 100vw;
+  height: 100svh;
+  place-items: center;
+  overflow: hidden;
+  background: transparent;
+  color: #e5ddc8;
+}
+
+.panel span {
+  font-size: clamp(0.65rem, 0.7vw, 0.8rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.18em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section {
+    position: relative;
+    inset: auto;
+    height: auto;
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .track {
+    display: grid;
+    width: 100%;
+    height: auto;
+    will-change: auto;
+  }
+
+  .panel {
+    width: 100%;
+  }
+}
