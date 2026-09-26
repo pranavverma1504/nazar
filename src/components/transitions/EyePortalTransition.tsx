@@ -47,6 +47,9 @@ export function EyePortalTransition({ children }: { children: ReactNode }) {
     const horizontalPath = stage?.querySelector<SVGPathElement>(
       "[data-horizontal-intro-path]",
     );
+    const pathClipRect = stage?.querySelector<SVGRectElement>(
+      "[data-horizontal-intro-path-clip]",
+    );
 
     if (
       !stage ||
@@ -58,7 +61,8 @@ export function EyePortalTransition({ children }: { children: ReactNode }) {
       !artboard ||
       !horizontalSection ||
       !horizontalTrack ||
-      !horizontalPath
+      !horizontalPath ||
+      !pathClipRect
     ) {
       return;
     }
@@ -103,12 +107,11 @@ export function EyePortalTransition({ children }: { children: ReactNode }) {
       const context = gsap.context(() => {
         const portalScrollDistance = () => Math.round(window.innerHeight * 1.8);
         const horizontalScrollDistance = () =>
-          horizontalTrack.scrollWidth - window.innerWidth;
+          horizontalTrack.offsetWidth - window.innerWidth;
         const horizontalDuration = () =>
           horizontalScrollDistance() / portalScrollDistance();
-        let horizontalTween: gsap.core.Animation | null = null;
-        let pathTween: gsap.core.Animation | null = null;
-        const pathLength = horizontalPath.getTotalLength();
+        let horizontalTween: gsap.core.Tween | null = null;
+        let pathClipTween: gsap.core.Tween | null = null;
 
         const timeline = gsap.timeline({
           scrollTrigger: {
@@ -124,7 +127,7 @@ export function EyePortalTransition({ children }: { children: ReactNode }) {
             onRefreshInit: () => {
               measureOrigin();
               horizontalTween?.duration(horizontalDuration());
-              pathTween?.duration(horizontalDuration());
+              pathClipTween?.duration(horizontalDuration());
             },
             onRefresh: measureOrigin,
           },
@@ -151,14 +154,7 @@ export function EyePortalTransition({ children }: { children: ReactNode }) {
           .to(finalRed, { opacity: 1, duration: 0.01, ease: "none" }, 0.985)
           .to({ hold: 0 }, { hold: 1, duration: 0.04 }, 0.96)
           .set(horizontalSection, { autoAlpha: 1 }, 1)
-          .set(
-            horizontalPath,
-            {
-              strokeDasharray: pathLength,
-              strokeDashoffset: pathLength,
-            },
-            1,
-          );
+          .set(pathClipRect, { attr: { width: 0 } }, 1);
 
         timeline.to(
           horizontalTrack,
@@ -169,18 +165,18 @@ export function EyePortalTransition({ children }: { children: ReactNode }) {
           },
           1,
         );
-        horizontalTween = timeline.recent() as gsap.core.Animation;
+        horizontalTween = timeline.recent() as gsap.core.Tween;
 
         timeline.to(
-          horizontalPath,
+          pathClipRect,
           {
-            strokeDashoffset: 0,
+            attr: { width: 2000 },
             duration: horizontalDuration(),
             ease: "none",
           },
           1,
         );
-        pathTween = timeline.recent() as gsap.core.Animation;
+        pathClipTween = timeline.recent() as gsap.core.Tween;
       }, stage);
 
       return () => context.revert();

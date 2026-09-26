@@ -14,9 +14,21 @@ export function HorizontalIntro() {
           preserveAspectRatio="none"
           viewBox="0 0 2000 1000"
         >
+          <defs>
+            <clipPath id="horizontal-path-clip">
+              <rect
+                data-horizontal-intro-path-clip
+                height="1000"
+                width="0"
+                x="0"
+                y="0"
+              />
+            </clipPath>
+          </defs>
           <path
             className={styles.storyPath}
-            d="M 80 690 C 220 680 210 330 430 280 C 650 230 650 720 900 660 C 1050 625 1030 360 1210 330 C 1425 295 1450 760 1680 650 C 1810 590 1825 330 1950 220"
+            clipPath="url(#horizontal-path-clip)"
+            d="M 80 690 C 220 680 210 330 430 280 C 650 230 650 720 900 660 C 1050 625 1030 360 1210 330 C 1425 295 1450 760 1680 650 C 1820 585 1920 520 2000 500"
             data-horizontal-intro-path
             vectorEffect="non-scaling-stroke"
           />
