@@ -12,7 +12,7 @@ export function HorizontalIntro() {
           aria-hidden="true"
           className={styles.pathLayer}
           preserveAspectRatio="none"
-          viewBox="0 0 2000 1000"
+          viewBox="0 0 2100 1000"
         >
           <defs>
             <clipPath id="horizontal-path-clip">
@@ -28,14 +28,14 @@ export function HorizontalIntro() {
           <path
             className={styles.storyPath}
             clipPath="url(#horizontal-path-clip)"
-            d="M 0 560 C 180 520 260 300 520 300 C 760 300 800 520 1030 560 C 1250 600 1400 480 1580 380 C 1760 280 1880 300 2000 330"
+            d="M 0 560 C 180 520 260 300 520 300 C 760 300 800 520 1030 560 C 1250 600 1400 480 1580 380 C 1760 280 1880 300 2000 330 C 2035 340 2070 375 2100 390"
             data-horizontal-intro-path
             vectorEffect="non-scaling-stroke"
           />
           <path
             className={styles.storyPath}
             clipPath="url(#horizontal-path-clip)"
-            d="M 0 360 C 230 390 330 520 520 540 C 730 560 820 360 1030 340 C 1240 320 1330 500 1510 530 C 1710 560 1840 450 2000 420"
+            d="M 0 360 C 230 390 330 520 520 540 C 730 560 820 360 1030 340 C 1240 320 1330 500 1510 530 C 1710 560 1840 450 2000 420 C 2035 420 2070 405 2100 390"
             vectorEffect="non-scaling-stroke"
           />
         </svg>

@@ -170,7 +170,7 @@ export function EyePortalTransition({ children }: { children: ReactNode }) {
         timeline.to(
           pathClipRect,
           {
-            attr: { width: 2000 },
+            attr: { width: 2100 },
             duration: horizontalDuration(),
             ease: "none",
           },
