@@ -28,17 +28,33 @@ export function HorizontalIntro() {
           <path
             className={styles.storyPath}
             clipPath="url(#horizontal-path-clip)"
-            d="M 80 690 C 220 680 210 330 430 280 C 650 230 650 720 900 660 C 1050 625 1030 360 1210 330 C 1425 295 1450 760 1680 650 C 1820 585 1920 520 2000 500"
+            d="M 0 560 C 180 520 260 300 520 300 C 760 300 800 520 1030 560 C 1250 600 1400 480 1580 380 C 1760 280 1880 300 2000 330"
             data-horizontal-intro-path
             vectorEffect="non-scaling-stroke"
           />
+          <path
+            className={styles.storyPath}
+            clipPath="url(#horizontal-path-clip)"
+            d="M 0 360 C 230 390 330 520 520 540 C 730 560 820 360 1030 340 C 1240 320 1330 500 1510 530 C 1710 560 1840 450 2000 420"
+            vectorEffect="non-scaling-stroke"
+          />
         </svg>
-        <section aria-label="Page 1" className={styles.panel}>
-          <span>PAGE 1</span>
-        </section>
-        <section aria-label="Page 2" className={styles.panel}>
-          <span>PAGE 2</span>
-        </section>
+        <div className={styles.narrativeLayer}>
+          <p className={`${styles.pageParagraph} ${styles.pocketOne}`}>
+            <span>Not every gaze is meant to be seen,</span>
+            <span>some are only meant to be felt.</span>
+          </p>
+          <p className={`${styles.pageParagraph} ${styles.pocketTwo}`}>
+            <span>The eye moves on before we notice,</span>
+            <span>but something of the gaze remains.</span>
+          </p>
+          <p className={`${styles.pageParagraph} ${styles.pocketThree}`}>
+            <span>What we cannot explain, we begin to fear,</span>
+            <span>and what we fear, we learn to protect against.</span>
+          </p>
+        </div>
+        <section aria-label="Page 1" className={styles.panel} />
+        <section aria-label="Page 2" className={styles.panel} />
       </div>
     </section>
   );
