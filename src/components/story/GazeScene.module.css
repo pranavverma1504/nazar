@@ -1,11 +1,24 @@
+.sequence {
+  position: relative;
+  width: 100%;
+  margin-top: -100svh;
+}
+
+.viewport {
+  position: fixed;
+  z-index: 4;
+  inset: 0;
+  overflow: hidden;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
 .scene {
   position: relative;
-  isolation: isolate;
   width: 100%;
   height: 100svh;
   min-height: 100svh;
-  overflow: hidden;
-  background: #b80000;
 }
 
 .revealWindow {
@@ -36,9 +49,71 @@
   background: transparent;
 }
 
-.midCloudLayer {
+.fallingLinesLayer {
+  position: absolute;
   z-index: 1;
+  top: 2%;
+  left: 50%;
+  width: min(36vw, 34rem);
+  height: 38svh;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate3d(-50%, 0, 0);
+  transform-origin: center bottom;
+  will-change: transform, opacity;
+}
+
+.fallingLinesLayer svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  fill: none;
+  stroke: #e5ddc8;
+  stroke-width: 1.35;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.midCloudLayer {
+  z-index: 2;
   inset: -4% -6% -10%;
+}
+
+.gazeCopy {
+  position: absolute;
+  z-index: 3;
+  width: min(28vw, 27rem);
+  overflow: hidden;
+  color: #fff;
+  pointer-events: none;
+}
+
+.gazeCopy p {
+  margin: 0;
+  font-family: "Iowan Old Style", Baskerville, "Times New Roman", serif;
+  font-size: clamp(1.2rem, 1.85vw, 1.85rem);
+  font-weight: 600;
+  line-height: 1.45;
+  letter-spacing: 0.01em;
+}
+
+.gazeCopyWord {
+  display: inline-block;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.gazeCopyLeft {
+  top: 34%;
+  left: 4vw;
+  text-align: right;
+}
+
+.gazeCopyRight {
+  top: 58%;
+  right: 4vw;
+  text-align: left;
 }
 
 .midCloudLayer img,
@@ -48,11 +123,12 @@
 }
 
 .subjectLayer {
-  z-index: 2;
+  z-index: 3;
   inset: 0;
   width: min(43vw, 42rem);
   height: min(88svh, 55rem);
   margin: auto;
+  transform: translate3d(0, 0, 0) scale(0.75);
   will-change: transform, opacity;
 }
 
@@ -62,11 +138,29 @@
 }
 
 .foregroundCloudLayer {
-  z-index: 3;
+  z-index: 4;
   inset: -2% -10% -16%;
 }
 
 @media (max-width: 700px) {
+  .gazeCopy {
+    top: auto;
+    bottom: 17%;
+    width: 38vw;
+  }
+
+  .gazeCopyLeft {
+    left: 5vw;
+  }
+
+  .gazeCopyRight {
+    right: 5vw;
+  }
+
+  .fallingLinesLayer {
+    width: 68vw;
+  }
+
   .midCloudLayer {
     inset: 8% -48% -5%;
   }
@@ -82,6 +176,17 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .sequence {
+    height: 100svh;
+    margin-top: 0;
+  }
+
+  .viewport {
+    position: absolute;
+    visibility: visible;
+    opacity: 1;
+  }
+
   .scene {
     background: #070707;
   }
@@ -92,6 +197,8 @@
   }
 
   .midCloudLayer,
+  .fallingLinesLayer,
+  .gazeCopyWord,
   .subjectLayer,
   .foregroundCloudLayer {
     will-change: auto;

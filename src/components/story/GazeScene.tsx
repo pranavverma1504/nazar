@@ -11,26 +11,37 @@ import styles from "./GazeScene.module.css";
 
 const depthEase = (progress: number) =>
   progress * progress * (3 - 2 * progress);
-const subjectEase = (progress: number) => 1 - Math.pow(1 - progress, 3);
 const gazeParticleColors = ["#ffffff"];
+const partOneWords = "The gaze lingers where desire begins,".split(" ");
+const partTwoWords = "and envy grows in the silence that follows.".split(" ");
 
 export function GazeScene() {
   const sceneRef = useRef<HTMLElement>(null);
-  const revealWindowRef = useRef<HTMLDivElement>(null);
+  const fallingLinesRef = useRef<HTMLDivElement>(null);
+  const partOneWordRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  const partTwoWordRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const midCloudRef = useRef<HTMLDivElement>(null);
   const subjectRef = useRef<HTMLDivElement>(null);
   const foregroundCloudRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const scene = sceneRef.current;
-    const revealWindow = revealWindowRef.current;
+    const fallingLines = fallingLinesRef.current;
+    const partOne = partOneWordRefs.current.filter(
+      (word): word is HTMLSpanElement => word !== null,
+    );
+    const partTwo = partTwoWordRefs.current.filter(
+      (word): word is HTMLSpanElement => word !== null,
+    );
     const midClouds = midCloudRef.current;
     const subject = subjectRef.current;
     const foregroundClouds = foregroundCloudRef.current;
 
     if (
       !scene ||
-      !revealWindow ||
+      !fallingLines ||
+      partOne.length !== partOneWords.length ||
+      partTwo.length !== partTwoWords.length ||
       !midClouds ||
       !subject ||
       !foregroundClouds
@@ -43,46 +54,13 @@ export function GazeScene() {
 
     media.add("(prefers-reduced-motion: no-preference)", () => {
       const context = gsap.context(() => {
-        const revealDuration = 0.7;
         const pureFallDuration = 2;
         const totalDuration = 3.4;
-        const sequenceDuration = revealDuration + totalDuration;
-        const revealStage = (
-          width: number,
-          height: number,
-          radius: string,
-        ) =>
-          `inset(${Math.max(0, (window.innerHeight - height) / 2)}px ${Math.max(
-            0,
-            (window.innerWidth - width) / 2,
-          )}px round ${radius})`;
-        const dotStage = () => revealStage(6, 6, "999px");
-        const shortDashStage = () =>
-          revealStage(
-            Math.min(Math.max(window.innerWidth * 0.08, 32), 96),
-            4,
-            "999px",
-          );
-        const lineStage = () =>
-          revealStage(window.innerWidth * 0.2, 4, "999px");
-        const pillStage = () =>
-          revealStage(
-            window.innerWidth * 0.22,
-            Math.min(Math.max(window.innerHeight * 0.06, 42), 58),
-            "999px",
-          );
-        const rectangleStage = () =>
-          revealStage(
-            window.innerWidth * 0.72,
-            window.innerHeight * 0.62,
-            "42px",
-          );
-        const fullStage = () => "inset(0px 0px round 0px)";
         const timeline = gsap.timeline({
           scrollTrigger: {
             trigger: scene,
             start: "top top",
-            end: () => `+=${Math.round(window.innerHeight * sequenceDuration)}`,
+            end: () => `+=${Math.round(window.innerHeight * totalDuration)}`,
             pin: true,
             pinSpacing: true,
             scrub: 0.8,
@@ -93,59 +71,85 @@ export function GazeScene() {
         });
 
         timeline
-          .set(revealWindow, { clipPath: dotStage }, 0)
-          .to(
-            revealWindow,
+          .fromTo(
+            fallingLines,
+            { autoAlpha: 0, scaleY: 0.18, yPercent: 18 },
             {
-              clipPath: shortDashStage,
-              duration: 0.08,
-              ease: depthEase,
+              autoAlpha: 0.42,
+              duration: 1.45,
+              ease: "power1.out",
+              scaleY: 1,
+              yPercent: -10,
             },
-            0,
+            0.25,
           )
           .to(
-            revealWindow,
-            { clipPath: lineStage, duration: 0.1, ease: depthEase },
-            0.08,
+            fallingLines,
+            {
+              autoAlpha: 0,
+              duration: 0.5,
+              ease: "power1.in",
+              yPercent: -24,
+            },
+            2.25,
           )
-          .to(
-            revealWindow,
-            { clipPath: pillStage, duration: 0.12, ease: depthEase },
-            0.18,
-          )
-          .to(
-            revealWindow,
-            { clipPath: rectangleStage, duration: 0.22, ease: depthEase },
+          .fromTo(
+            partOne,
+            { autoAlpha: 0, yPercent: 55 },
+            {
+              autoAlpha: 1,
+              duration: 0.32,
+              ease: "power2.out",
+              stagger: 0.05,
+              yPercent: 0,
+            },
             0.3,
           )
+          .fromTo(
+            partTwo,
+            { autoAlpha: 0, yPercent: 55 },
+            {
+              autoAlpha: 1,
+              duration: 0.32,
+              ease: "power2.out",
+              stagger: 0.05,
+              yPercent: 0,
+            },
+            0.72,
+          )
           .to(
-            revealWindow,
-            { clipPath: fullStage, duration: 0.18, ease: depthEase },
-            0.52,
+            [partOne, partTwo],
+            {
+              autoAlpha: 0,
+              duration: 0.3,
+              ease: "power1.in",
+              stagger: 0.018,
+              yPercent: -35,
+            },
+            1.56,
           )
           .fromTo(
             midClouds,
             { scale: 1.01, yPercent: 92 },
             { duration: 1.4, ease: depthEase, scale: 1.055, yPercent: -8 },
-            revealDuration + pureFallDuration,
+            pureFallDuration,
           )
           .fromTo(
             subject,
-            { autoAlpha: 0, scale: 0.92, yPercent: 88 },
+            { scale: 0.75, yPercent: -12 },
             {
-              autoAlpha: 1,
-              duration: 0.9,
-              ease: subjectEase,
-              scale: 1,
-              yPercent: 0,
+              duration: 2.8,
+              ease: depthEase,
+              scale: 0.75,
+              yPercent: 14,
             },
-            revealDuration + pureFallDuration + 0.42,
+            0,
           )
           .fromTo(
             foregroundClouds,
             { scale: 1.025, yPercent: 102 },
             { duration: 0.85, ease: depthEase, scale: 1.09, yPercent: -14 },
-            revealDuration + pureFallDuration + 0.55,
+            pureFallDuration + 0.55,
           );
       }, scene);
 
@@ -161,53 +165,106 @@ export function GazeScene() {
   }, []);
 
   return (
-    <section aria-label="Gaze" className={styles.scene} ref={sceneRef}>
-      <div className={styles.revealWindow} ref={revealWindowRef}>
-        <div className={styles.backgroundLayer}>
-          <Particles
-            alphaParticles
-            disableRotation
-            moveParticlesOnHover
-            particleBaseSize={80}
-            particleColors={gazeParticleColors}
-            particleCount={220}
-            particleHoverFactor={1}
-            particleSpread={12}
-            pixelRatio={1}
-            speed={0.035}
-          />
-        </div>
+    <div className={styles.sequence}>
+      <div className={styles.viewport} data-gaze-viewport>
+        <div className={styles.revealWindow} data-gaze-reveal-window>
+          <div className={styles.backgroundLayer}>
+            <Particles
+              alphaParticles
+              disableRotation
+              moveParticlesOnHover
+              particleBaseSize={80}
+              particleColors={gazeParticleColors}
+              particleCount={220}
+              particleHoverFactor={1}
+              particleSpread={12}
+              pixelRatio={1}
+              speed={0.035}
+            />
+          </div>
 
-        <div className={styles.midCloudLayer} ref={midCloudRef}>
-          <Image
-            alt=""
-            fill
-            loading="eager"
-            sizes="100vw"
-            src="/images/gaze/gaze-clouds-mid.webp"
-          />
-        </div>
+          <div
+            aria-hidden="true"
+            className={styles.fallingLinesLayer}
+            ref={fallingLinesRef}
+          >
+            <svg viewBox="0 0 640 300">
+              <line x1="92" x2="88" y1="46" y2="190" />
+              <line x1="166" x2="170" y1="82" y2="236" />
+              <line x1="242" x2="239" y1="28" y2="172" />
+              <line x1="320" x2="324" y1="62" y2="250" />
+              <line x1="398" x2="394" y1="34" y2="188" />
+              <line x1="474" x2="478" y1="76" y2="226" />
+              <line x1="550" x2="547" y1="42" y2="178" />
+            </svg>
+          </div>
 
-        <div className={styles.subjectLayer} ref={subjectRef}>
-          <Image
-            alt=""
-            fill
-            loading="eager"
-            sizes="(max-width: 700px) 82vw, 42vw"
-            src="/images/gaze/gaze-subject.webp"
-          />
-        </div>
+          <div className={styles.midCloudLayer} ref={midCloudRef}>
+            <Image
+              alt=""
+              fill
+              loading="eager"
+              sizes="100vw"
+              src="/images/gaze/gaze-clouds-mid.webp"
+            />
+          </div>
 
-        <div className={styles.foregroundCloudLayer} ref={foregroundCloudRef}>
-          <Image
-            alt=""
-            fill
-            loading="eager"
-            sizes="100vw"
-            src="/images/gaze/gaze-clouds-front.webp"
-          />
+          <div className={`${styles.gazeCopy} ${styles.gazeCopyLeft}`}>
+            <p>
+              {partOneWords.map((word, index) => (
+                <span
+                  className={styles.gazeCopyWord}
+                  key={`${word}-${index}`}
+                  ref={(element) => {
+                    partOneWordRefs.current[index] = element;
+                  }}
+                >
+                  {word}
+                  {index < partOneWords.length - 1 ? "\u00a0" : ""}
+                </span>
+              ))}
+            </p>
+          </div>
+
+          <div className={`${styles.gazeCopy} ${styles.gazeCopyRight}`}>
+            <p>
+              {partTwoWords.map((word, index) => (
+                <span
+                  className={styles.gazeCopyWord}
+                  key={`${word}-${index}`}
+                  ref={(element) => {
+                    partTwoWordRefs.current[index] = element;
+                  }}
+                >
+                  {word}
+                  {index < partTwoWords.length - 1 ? "\u00a0" : ""}
+                </span>
+              ))}
+            </p>
+          </div>
+
+          <div className={styles.subjectLayer} ref={subjectRef}>
+            <Image
+              alt=""
+              fill
+              loading="eager"
+              sizes="(max-width: 700px) 82vw, 42vw"
+              src="/images/gaze/gaze-subject.webp"
+            />
+          </div>
+
+          <div className={styles.foregroundCloudLayer} ref={foregroundCloudRef}>
+            <Image
+              alt=""
+              fill
+              loading="eager"
+              sizes="100vw"
+              src="/images/gaze/gaze-clouds-front.webp"
+            />
+          </div>
         </div>
       </div>
-    </section>
+      <section aria-label="Gaze" className={styles.scene} ref={sceneRef} />
+    </div>
   );
 }

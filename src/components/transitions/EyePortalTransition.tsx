@@ -21,6 +21,8 @@ const transitionOriginY = originEye.crop.y + 99;
 const portalDiameter = 64;
 const coreDiameterRatio = 0.72 * 0.25;
 const innerFinalScale = 1.45;
+const revealEase = (progress: number) =>
+  progress * progress * (3 - 2 * progress);
 
 export function EyePortalTransition({ children }: { children: ReactNode }) {
   const stageRef = useRef<HTMLDivElement>(null);
@@ -50,6 +52,12 @@ export function EyePortalTransition({ children }: { children: ReactNode }) {
     const pathClipRect = stage?.querySelector<SVGRectElement>(
       "[data-horizontal-intro-path-clip]",
     );
+    const gazeViewport = document.querySelector<HTMLElement>(
+      "[data-gaze-viewport]",
+    );
+    const gazeRevealWindow = document.querySelector<HTMLElement>(
+      "[data-gaze-reveal-window]",
+    );
     if (
       !stage ||
       !overlay ||
@@ -61,7 +69,9 @@ export function EyePortalTransition({ children }: { children: ReactNode }) {
       !horizontalSection ||
       !horizontalTrack ||
       !horizontalPath ||
-      !pathClipRect
+      !pathClipRect ||
+      !gazeViewport ||
+      !gazeRevealWindow
     ) {
       return;
     }
@@ -107,17 +117,56 @@ export function EyePortalTransition({ children }: { children: ReactNode }) {
         const portalScrollDistance = () => Math.round(window.innerHeight * 1.8);
         const horizontalScrollDistance = () =>
           horizontalTrack.offsetWidth - window.innerWidth;
+        const revealScrollDistance = () => Math.round(window.innerHeight * 0.7);
         const horizontalDuration = () =>
           horizontalScrollDistance() / portalScrollDistance();
+        const revealDuration = () =>
+          revealScrollDistance() / portalScrollDistance();
+        const revealStage = (
+          width: number,
+          height: number,
+          radius: string,
+        ) =>
+          `inset(${Math.max(0, (window.innerHeight - height) / 2)}px ${Math.max(
+            0,
+            (window.innerWidth - width) / 2,
+          )}px round ${radius})`;
+        const dotStage = () => revealStage(6, 6, "999px");
+        const shortDashStage = () =>
+          revealStage(
+            Math.min(Math.max(window.innerWidth * 0.08, 32), 96),
+            4,
+            "999px",
+          );
+        const lineStage = () =>
+          revealStage(window.innerWidth * 0.2, 4, "999px");
+        const pillStage = () =>
+          revealStage(
+            window.innerWidth * 0.22,
+            Math.min(Math.max(window.innerHeight * 0.06, 42), 58),
+            "999px",
+          );
+        const rectangleStage = () =>
+          revealStage(
+            window.innerWidth * 0.72,
+            window.innerHeight * 0.62,
+            "42px",
+          );
+        const fullStage = () => "inset(0px 0px round 0px)";
         let horizontalTween: gsap.core.Tween | null = null;
         let pathClipTween: gsap.core.Tween | null = null;
+        let revealSequence: gsap.core.Timeline | null = null;
 
         const timeline = gsap.timeline({
           scrollTrigger: {
             trigger: stage,
             start: "top top",
             end: () =>
-              `+=${portalScrollDistance() + horizontalScrollDistance()}`,
+              `+=${
+                portalScrollDistance() +
+                horizontalScrollDistance() +
+                revealScrollDistance()
+              }`,
             pin: true,
             pinSpacing: true,
             scrub: 0.8,
@@ -127,6 +176,9 @@ export function EyePortalTransition({ children }: { children: ReactNode }) {
               measureOrigin();
               horizontalTween?.duration(horizontalDuration());
               pathClipTween?.duration(horizontalDuration());
+              revealSequence
+                ?.duration(revealDuration())
+                .startTime(1 + horizontalDuration());
             },
             onRefresh: measureOrigin,
           },
@@ -176,6 +228,38 @@ export function EyePortalTransition({ children }: { children: ReactNode }) {
           1,
         );
         pathClipTween = timeline.recent() as gsap.core.Tween;
+
+        revealSequence = gsap
+          .timeline()
+          .set(gazeViewport, { autoAlpha: 1 }, 0)
+          .set(gazeRevealWindow, { clipPath: dotStage }, 0)
+          .to(
+            gazeRevealWindow,
+            { clipPath: shortDashStage, duration: 0.08, ease: revealEase },
+            0,
+          )
+          .to(
+            gazeRevealWindow,
+            { clipPath: lineStage, duration: 0.1, ease: revealEase },
+            0.08,
+          )
+          .to(
+            gazeRevealWindow,
+            { clipPath: pillStage, duration: 0.12, ease: revealEase },
+            0.18,
+          )
+          .to(
+            gazeRevealWindow,
+            { clipPath: rectangleStage, duration: 0.22, ease: revealEase },
+            0.3,
+          )
+          .to(
+            gazeRevealWindow,
+            { clipPath: fullStage, duration: 0.18, ease: revealEase },
+            0.52,
+          );
+        revealSequence.duration(revealDuration());
+        timeline.add(revealSequence, 1 + horizontalDuration());
       }, stage);
 
       return () => context.revert();
