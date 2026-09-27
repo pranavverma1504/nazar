@@ -50,7 +50,6 @@ export function EyePortalTransition({ children }: { children: ReactNode }) {
     const pathClipRect = stage?.querySelector<SVGRectElement>(
       "[data-horizontal-intro-path-clip]",
     );
-
     if (
       !stage ||
       !overlay ||

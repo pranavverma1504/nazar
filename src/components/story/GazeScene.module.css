@@ -5,7 +5,16 @@
   height: 100svh;
   min-height: 100svh;
   overflow: hidden;
+  background: #b80000;
+}
+
+.revealWindow {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
   background: #070707;
+  clip-path: inset(calc(50% - 3px) calc(50% - 3px) round 999px);
+  will-change: clip-path;
 }
 
 .midCloudLayer,
@@ -24,7 +33,7 @@
   inset: 0;
   overflow: hidden;
   pointer-events: none;
-  background: #000;
+  background: transparent;
 }
 
 .midCloudLayer {
@@ -73,6 +82,15 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .scene {
+    background: #070707;
+  }
+
+  .revealWindow {
+    clip-path: none;
+    will-change: auto;
+  }
+
   .midCloudLayer,
   .subjectLayer,
   .foregroundCloudLayer {
