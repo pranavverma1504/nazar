@@ -14,16 +14,26 @@ const bebasNeue = Bebas_Neue({
   weight: "400",
 });
 
-const GRID_TILES = [
-  { id: "upper-left", image: "/images/loader/grid-01.jpg", position: "7% 31%", scale: 2.05 },
-  { id: "upper-center", image: "/images/loader/grid-02.jpg", position: "47% 49%", scale: 2.45 },
-  { id: "upper-right", image: "/images/loader/grid-03.jpg", position: "87% 20%", scale: 1.85 },
-  { id: "middle-left", image: "/images/loader/grid-04.jpg", position: "4% 63%", scale: 2.8 },
-  { id: "center", image: "", position: "50% 50%", title: true },
-  { id: "middle-right", image: "/images/loader/grid-05.jpg", position: "94% 72%", scale: 1.9 },
-  { id: "lower-left", image: "/images/loader/grid-06.jpg", position: "22% 87%", scale: 1.72 },
-  { id: "lower-center", image: "/images/loader/grid-07.jpg", position: "50% 80%", scale: 2.65 },
-  { id: "lower-right", image: "/images/loader/grid-08.jpg", position: "99% 91%", scale: 2.25 },
+type GridTile = {
+  id: string;
+  image: string;
+  position: string;
+  fit: "cover" | "contain";
+  mediaScale: number;
+  background: string;
+  title?: true;
+};
+
+const GRID_TILES: GridTile[] = [
+  { id: "upper-left", image: "/images/loader/grid-01-updated.jpg", position: "50% 34%", fit: "contain", mediaScale: 1.18, background: "#e8dfcf" },
+  { id: "upper-center", image: "/images/loader/grid-02.jpg", position: "50% 54%", fit: "cover", mediaScale: 1, background: "#bdbdbd" },
+  { id: "upper-right", image: "/images/loader/grid-03.jpg", position: "50% 46%", fit: "contain", mediaScale: 1.16, background: "#050505" },
+  { id: "middle-left", image: "/images/loader/grid-04.jpg", position: "50% 44%", fit: "cover", mediaScale: 1, background: "#e8e2c7" },
+  { id: "center", image: "", position: "50% 50%", fit: "cover", mediaScale: 1, background: "#8d1111", title: true },
+  { id: "middle-right", image: "/images/loader/grid-05-updated.jpg", position: "50% 32%", fit: "cover", mediaScale: 1, background: "#eee9e1" },
+  { id: "lower-left", image: "/images/loader/grid-06-new.jpg", position: "50% 42%", fit: "contain", mediaScale: 1.18, background: "#26342f" },
+  { id: "lower-center", image: "/images/loader/grid-07.jpg", position: "50% 58%", fit: "cover", mediaScale: 1, background: "#e8e8e8" },
+  { id: "lower-right", image: "/images/loader/grid-08.jpg", position: "50% 50%", fit: "cover", mediaScale: 1, background: "#eee" },
 ];
 
 const TILE = {
@@ -410,6 +420,7 @@ export function NazarLoader() {
                 ref={(node) => {
                   artworkRefs.current[index] = node;
                 }}
+                style={{ backgroundColor: tile.background }}
               >
                 <Image
                   alt=""
@@ -420,8 +431,9 @@ export function NazarLoader() {
                   sizes="34vw"
                   src={tile.image}
                   style={{
+                    objectFit: tile.fit,
                     objectPosition: tile.position,
-                    transform: `translate3d(0, 0, 0) scale(${tile.scale})`,
+                    transform: `translate3d(0, 0, 0) scale(${tile.mediaScale})`,
                   }}
                 />
               </div>
