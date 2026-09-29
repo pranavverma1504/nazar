@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-import beliefArtwork from "../../../public/images/hero/belief-reference.png";
+import beliefArtwork from "../../../public/images/hero/belief-reference.webp";
 
 import styles from "./Hero.module.css";
 import { InteractiveHeroEyes } from "./InteractiveHeroEyes";
@@ -8,7 +8,7 @@ import { InteractiveHeroEyes } from "./InteractiveHeroEyes";
 export function Hero() {
   return (
     <section
-      aria-labelledby="belief-title"
+      aria-labelledby="hero-title"
       className="relative z-0 min-h-svh overflow-hidden bg-[#e5ddc8] text-[#12110f]"
       data-nazar-layer="hero"
     >
@@ -27,7 +27,6 @@ export function Hero() {
             sizes="(orientation: portrait) 178svh, 100vw"
             src={beliefArtwork}
           />
-          <span className={styles.beliefTint} />
         </div>
       </div>
 
@@ -40,9 +39,15 @@ export function Hero() {
       </div>
 
       <div className={styles.titleLayer} data-hero-layer="title">
-        <h2 className="sr-only" id="belief-title">
-          BELIEF
+        <h2 className="sr-only" id="hero-title">
+          NAZAR
         </h2>
+        <div aria-hidden="true" className={styles.titleArtboard}>
+          <div
+            className={styles.titleDestination}
+            data-hero-title-destination
+          />
+        </div>
       </div>
     </section>
   );
