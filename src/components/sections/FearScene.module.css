@@ -1,0 +1,197 @@
+.scene {
+  position: relative;
+  z-index: 5;
+  width: 100%;
+  min-height: 345svh;
+  margin-top: -28svh;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.scene::before {
+  position: absolute;
+  z-index: 0;
+  top: 28svh;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: #050505;
+  content: "";
+}
+
+.atmosphere {
+  position: absolute;
+  z-index: 0;
+  inset: 28svh 0 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.upperAtmosphere,
+.middleAtmosphere,
+.deepAtmosphere {
+  position: absolute;
+  right: 0;
+  left: 0;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 18%, black 76%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, black 18%, black 76%, transparent);
+}
+
+/* Spatial density follows the descent without adding a scroll animation.
+   Off-edge ellipses leave the central heart channel unobstructed. */
+.upperAtmosphere {
+  top: 26%;
+  height: 34%;
+  background:
+    radial-gradient(ellipse 34% 45% at 106% 64%, rgb(48 41 35 / 0.16), transparent 100%),
+    radial-gradient(ellipse 25% 36% at -10% 85%, rgb(43 36 31 / 0.06), transparent 100%);
+}
+
+.middleAtmosphere {
+  top: 40%;
+  height: 45%;
+  background:
+    radial-gradient(ellipse 34% 54% at 105% 42%, rgb(39 37 34 / 0.24) 8%, transparent 100%),
+    radial-gradient(ellipse 28% 40% at -6% 86%, rgb(36 34 31 / 0.18), transparent 100%),
+    radial-gradient(ellipse 22% 28% at 100% 81%, rgb(29 28 26 / 0.24), transparent 100%);
+}
+
+.deepAtmosphere {
+  top: 63%;
+  bottom: 0;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 22%);
+  mask-image: linear-gradient(to bottom, transparent, black 22%);
+  background:
+    radial-gradient(ellipse 31% 66% at -4% 66%, rgb(38 36 33 / 0.3) 12%, transparent 100%),
+    radial-gradient(ellipse 33% 58% at 106% 36%, rgb(35 33 30 / 0.28) 10%, transparent 100%),
+    radial-gradient(ellipse 28% 42% at 0% 100%, rgb(28 27 25 / 0.34), transparent 100%),
+    radial-gradient(ellipse 27% 48% at 102% 100%, rgb(30 28 26 / 0.32), transparent 100%);
+}
+
+.bridgeLayer {
+  position: absolute;
+  z-index: 2;
+  top: -100svh;
+  left: 50%;
+  width: 180%;
+  transform: translate3d(-50%, 0, 0);
+}
+
+.bridge {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.heartLayer {
+  position: absolute;
+  z-index: 1;
+  top: 18svh;
+  left: 50%;
+  width: clamp(8rem, 18vw, 16rem);
+  transform: translate3d(-50%, 0, 0);
+  will-change: transform;
+}
+
+.heart {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.foregroundMist {
+  position: absolute;
+  z-index: 3;
+  inset: 28svh 0 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.mistWisp {
+  position: absolute;
+  -webkit-mask-image: radial-gradient(ellipse 65% 50% at 50% 50%, black 15%, transparent 90%);
+  mask-image: radial-gradient(ellipse 65% 50% at 50% 50%, black 15%, transparent 90%);
+}
+
+.middleMist {
+  top: 44%;
+  right: -16%;
+  width: 100%;
+  height: 44svh;
+  opacity: 0.32;
+  -webkit-mask-image: radial-gradient(ellipse 60% 48% at 68% 50%, black 24%, transparent 95%);
+  mask-image: radial-gradient(ellipse 60% 48% at 68% 50%, black 24%, transparent 95%);
+}
+
+.lowerMist {
+  top: 72%;
+  left: -15%;
+  width: 78%;
+  height: 30svh;
+  opacity: 0.25;
+  -webkit-mask-image: radial-gradient(ellipse 60% 46% at 32% 50%, black 22%, transparent 95%);
+  mask-image: radial-gradient(ellipse 60% 46% at 32% 50%, black 22%, transparent 95%);
+}
+
+.mistImage {
+  object-fit: cover;
+  object-position: center 65%;
+}
+
+.copyEncounter {
+  position: absolute;
+  z-index: 4;
+  top: 50%;
+  left: 18vw;
+  width: 20vw;
+  max-width: 18rem;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.copy {
+  margin: 0;
+  color: #e5ddc8;
+  font-family: "Iowan Old Style", Baskerville, "Times New Roman", serif;
+  font-size: clamp(1rem, 1.55vw, 1.4rem);
+  font-weight: 400;
+  line-height: 1.55;
+  letter-spacing: 0.01em;
+  opacity: 0;
+  transform: translate3d(0, 12px, 0);
+}
+
+.copyLine {
+  display: block;
+  white-space: nowrap;
+}
+
+@media (max-width: 700px) {
+  .heartLayer {
+    width: clamp(7rem, 34vw, 11rem);
+  }
+
+  .copyEncounter {
+    left: 4vw;
+    width: 27vw;
+  }
+
+  .copy {
+    font-size: 0.75rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene {
+    min-height: 183svh;
+  }
+
+  .heartLayer {
+    will-change: auto;
+  }
+
+  .copy {
+    opacity: 1;
+    transform: none;
+  }
+}

@@ -1,5 +1,6 @@
 import { Hero } from "@/components/hero/Hero";
 import { NazarLoader } from "@/components/loader/NazarLoader";
+import { FearScene } from "@/components/sections/FearScene";
 import { GazeScene } from "@/components/story/GazeScene";
 import { HorizontalIntro } from "@/components/story/HorizontalIntro";
 import { EyePortalTransition } from "@/components/transitions/EyePortalTransition";
@@ -13,6 +14,7 @@ export default function Home() {
         <HorizontalIntro />
       </EyePortalTransition>
       <GazeScene />
+      <FearScene />
       <NazarLoader />
     </main>
   );

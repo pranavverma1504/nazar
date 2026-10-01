@@ -157,6 +157,14 @@ export function EyePortalTransition({ children }: { children: ReactNode }) {
         let pathClipTween: gsap.core.Tween | null = null;
         let revealSequence: gsap.core.Timeline | null = null;
 
+        // Gaze is normal flow until its own pin starts at this trigger's end.
+        // Cancel that remaining document offset so the reveal stays on Page 2.
+        const alignGazeReveal = (trigger: ScrollTrigger) => {
+          gsap.set(gazeViewport, {
+            y: -Math.max(0, trigger.end - trigger.scroll()),
+          });
+        };
+
         const timeline = gsap.timeline({
           scrollTrigger: {
             trigger: stage,
@@ -180,7 +188,11 @@ export function EyePortalTransition({ children }: { children: ReactNode }) {
                 ?.duration(revealDuration())
                 .startTime(1 + horizontalDuration());
             },
-            onRefresh: measureOrigin,
+            onUpdate: alignGazeReveal,
+            onRefresh: (trigger) => {
+              measureOrigin();
+              alignGazeReveal(trigger);
+            },
           },
         });
 

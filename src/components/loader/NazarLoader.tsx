@@ -7,6 +7,8 @@ import { gsap } from "gsap";
 
 import styles from "./NazarLoader.module.css";
 
+const SKIP_INTRO = true;
+
 const bebasNeue = Bebas_Neue({
   display: "swap",
   subsets: ["latin"],
@@ -176,6 +178,12 @@ export function NazarLoader() {
         willChange: "transform",
       });
     };
+
+    if (SKIP_INTRO) {
+      placeWordmarkInHero();
+      gsap.set(loader, { autoAlpha: 0, pointerEvents: "none" });
+      return;
+    }
 
     const context = gsap.context(() => {
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -362,7 +370,7 @@ export function NazarLoader() {
   return (
     <section
       aria-label="NAZAR introduction"
-      className={styles.loader}
+      className={`${styles.loader} ${SKIP_INTRO ? styles.loaderSkipped : ""}`}
       data-nazar-layer="loader"
       ref={loaderRef}
     >

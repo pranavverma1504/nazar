@@ -138,10 +138,10 @@ export function GazeScene() {
             subject,
             { scale: 0.75, yPercent: -12 },
             {
-              duration: 2.8,
+              duration: 3.4,
               ease: depthEase,
               scale: 0.75,
-              yPercent: 14,
+              yPercent: 60,
             },
             0,
           )
@@ -166,8 +166,9 @@ export function GazeScene() {
 
   return (
     <div className={styles.sequence}>
-      <div className={styles.viewport} data-gaze-viewport>
-        <div className={styles.revealWindow} data-gaze-reveal-window>
+      <section aria-label="Gaze" className={styles.scene} ref={sceneRef}>
+        <div className={styles.viewport} data-gaze-viewport>
+          <div className={styles.revealWindow} data-gaze-reveal-window>
           <div className={styles.backgroundLayer}>
             <Particles
               alphaParticles
@@ -262,9 +263,9 @@ export function GazeScene() {
               src="/images/gaze/gaze-clouds-front.webp"
             />
           </div>
+          </div>
         </div>
-      </div>
-      <section aria-label="Gaze" className={styles.scene} ref={sceneRef} />
+      </section>
     </div>
   );
 }

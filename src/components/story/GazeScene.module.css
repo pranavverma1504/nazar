@@ -5,7 +5,7 @@
 }
 
 .viewport {
-  position: fixed;
+  position: absolute;
   z-index: 4;
   inset: 0;
   overflow: hidden;

@@ -7,7 +7,7 @@ import { useEffect, useRef } from "react";
 import styles from "./Hero.module.css";
 import { HERO_ARTBOARD, heroEyeConfigs } from "./heroEyeConfig";
 
-const LERP = 0.11;
+const LERP = 0.154;
 const SETTLED_EPSILON = 0.001;
 const INFLUENCE_DISTANCE = HERO_ARTBOARD.width * 0.5;
 
@@ -346,4 +346,3 @@ export function InteractiveHeroEyes() {
     </div>
   );
 }
-
