@@ -13,12 +13,6 @@
   pointer-events: auto;
 }
 
-.loaderSkipped {
-  visibility: hidden;
-  opacity: 0;
-  pointer-events: none;
-}
-
 .grid {
   position: relative;
   display: grid;
